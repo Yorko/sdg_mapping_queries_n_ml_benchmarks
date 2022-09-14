@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ds-sdg-query-ml-benchmarks"
+name = "sdg_mapping_queries_n_ml_benchmarks"
 version = "0.1.0"
 description = "Code for the SDG benchmarking experiments"
 authors = ["Yury Kashnitsky <y.kashnitskiy@elsevier.com>"]
