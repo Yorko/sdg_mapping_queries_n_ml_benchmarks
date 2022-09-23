@@ -1,6 +1,6 @@
 # sdg\_mapping\_queries\_n\_ml\_benchmarks
 
-This code reproduces benchmarking experiments presented in Table 4 of the paper "Identifying research supporting the United Nations Sustainable Development Goals".
+This code reproduces benchmarking experiments presented in Table 4 of the paper "Identifying research supporting the United Nations Sustainable Development Goals" – [ArXiv](https://arxiv.org/abs/2209.07285), under consideration at PLOS ONE.
 
 <img src='img/table4_paper_experiments.png' width=70%>
 
