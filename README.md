@@ -21,13 +21,14 @@ poetry run python sdg_mapping_queries_n_ml_benchmarks/validate_query_output_vs_v
 This will print precision, recall, F1 by SDGs along with their micro- and macro-averaged values:
 
 ```
-# scores by SDG are ommitted
-Micro-average precision = 0.742
-Macro-average precision = 0.631
-Micro-average recall = 0.787
-Macro-average recall = 0.754
-Micro-average f1 = 0.753
-Macro-average f1 = 0.671
+{
+ 'f1_macro': 0.6720051335779433,
+ 'f1_micro': 0.7751455531017868,
+ 'precision_macro': 0.5943059123378011,
+ 'precision_micro': 0.6870106761565836,
+ 'recall_macro': 0.8053484586016316,
+ 'recall_micro': 0.8892215568862275
+}
 ```
 
-The last 2 lines stand for the values presented in Table 4 of the paper: micro- and macro-averaged F1 scores. 
+The first 2 lines stand for the values presented in Table 4 of the paper: micro- and macro-averaged F1 scores. 
