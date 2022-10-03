@@ -1,8 +1,8 @@
 import argparse
 from typing import Tuple
-
+from pprint import pprint
 import pandas as pd
-from metrics import calc_metrics_per_sdg, macro_average, micro_average
+from metrics import multilabel_metrics
 
 
 def parse_args() -> argparse.Namespace:
@@ -11,7 +11,7 @@ def parse_args() -> argparse.Namespace:
     :return: argparse.Namespace object
     """
     parser = argparse.ArgumentParser(
-        description="Validate SDg queries/ML output with an evaluation dataset."
+        description="Validate SDG queries/ML output with an evaluation dataset."
     )
     parser.add_argument(
         "--path_to_query_output",
@@ -56,23 +56,6 @@ def read_data(
     return query_mapping_df, val_set_df
 
 
-def print_results(metric_df: pd.DataFrame) -> None:
-    """
-    Reports the results, per SDG, and also with micro- and macro-averaging.
-    :param metric_df: output of the `calc_metrics_per_sdg` function
-    :return: None
-    """
-    print(f"Scores by SDG:\n{metric_df}")
-
-    for metric in ["precision", "recall", "f1"]:
-        print(
-            f"Micro-average {metric} = {micro_average(metric_df=metric_df, metric_col_name=metric):.3f}"
-        )
-        print(
-            f"Macro-average {metric} = {macro_average(metric_df=metric_df, metric_col_name=metric):.3f}"
-        )
-
-
 def main() -> None:
 
     args = parse_args()
@@ -82,9 +65,9 @@ def main() -> None:
         index_col_name=args.index_col_name,
     )
 
-    metric_df = calc_metrics_per_sdg(query_df=query_mapping_df, val_df=val_set_df)
+    metric_df = multilabel_metrics(query_df=query_mapping_df, val_df=val_set_df)
 
-    print_results(metric_df=metric_df)
+    pprint(metric_df)
 
 
 if __name__ == "__main__":

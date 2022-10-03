@@ -1,94 +1,56 @@
+from typing import Dict
 import pandas as pd
+from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.preprocessing import MultiLabelBinarizer
+
+NUM_SDGS = 16
 
 
-def calc_metrics_per_sdg(
-    query_df: pd.DataFrame,
-    val_df: pd.DataFrame,
-    num_sdgs: int = 16,
-    sdg_id_col_name: str = "sdg_id",
-) -> pd.DataFrame:
+def multilabel_metrics(query_df: pd.DataFrame, val_df: pd.DataFrame, num_labels: int = NUM_SDGS,
+                   sdg_id_col_name: str = "sdg_id",
+                   sdg_pred_col_name: str = "sdg_pred",) -> Dict[str, int]:
     """
+        Computes precision, recall, and F1 scores per SDGs, given two DataFrames:
+        one with query/Ml output, another one with "golden" annotations.
+        :param query_df: a dataframe with an `sdg_id` column and `eid` as an index
+        :param val_df: a dataframe with an `sdg_id` column and `eid` as an index
+        :param num_labels: number of SDGs under consideration
+        :param sdg_id_col_name: column name for the SDG Id
+        :return: a DataFrame with metrics
+        """
 
-    Computes precision, recall, and F1 scores per SDGs, given two DataFrames:
-    one with query/Ml output, another one with "golden" annotations.
-
-    :param query_df: a dataframe with an `sdg_id` column and `eid` as an index
-    :param val_df: a dataframe with an `sdg_id` column and `eid` as an index
-    :param num_sdgs: number of SDGs under consideration
-    :param sdg_id_col_name: column name for the SDG Id
-
-    :return: a DataFrame with metrics
-    """
-
-    prec_scores, recall_scores, f1_scores, supports = [], [], [], []
-
-    # we consider only those EIDs that are present in the current
-    # validation set
+    # take only those IDs with prediction that are present in the validation set
     query_map = query_df[query_df.index.isin(val_df.index)]
 
-    for sdg_id in range(1, num_sdgs + 1):
+    # group predictions by ID and collect a list of predicted Goals per ID
+    pred_grouped = pd.DataFrame(query_map.groupby(query_map.index)[sdg_id_col_name].apply(list)) \
+        .rename(columns={sdg_id_col_name: sdg_pred_col_name})
 
-        # select IDs for the current sdg_id
-        query_ids = query_map[query_map[sdg_id_col_name] == sdg_id].index
-        val_ids = val_df.loc[val_df[sdg_id_col_name] == sdg_id].index
-        overlap = set(query_ids).intersection(val_ids)
+    # group labels by ID and collect a list of labels per ID
+    labels_qrouped = pd.DataFrame(val_df.groupby(val_df.index)[sdg_id_col_name].apply(list))
 
-        # support – is the number of papers from the validation set
-        # that are captured by the queries
-        support = len(overlap)
+    # collect both in a same DataFrame
+    pred_df = pred_grouped.join(labels_qrouped, how='inner')
 
-        # precision – is the share of papers from the query set
-        # that are classified into the same SDG as in the validation set
-        precision = len(overlap) / len(query_ids) if len(query_ids) else 0
+    # binarize labels and compute multi-label metrics
+    mlb = MultiLabelBinarizer(classes=range(num_labels + 1))
+    binarized_targets = mlb.fit_transform(pred_df[sdg_id_col_name])
+    binarized_preds = mlb.transform(pred_df[sdg_pred_col_name])
 
-        # recall – is the share of papers from the validation set
-        # that are classified into the same SDG by the queries
-        recall = len(overlap) / len(val_ids) if len(val_ids) else 0
+    res_df = {
+        'precision_micro': precision_score(y_true=binarized_targets,
+                                           y_pred=binarized_preds, average='micro'),
+        'precision_macro': precision_score(y_true=binarized_targets,
+                                           y_pred=binarized_preds, average='macro'),
+        'recall_micro': recall_score(y_true=binarized_targets,
+                                     y_pred=binarized_preds, average='micro'),
+        'recall_macro': recall_score(y_true=binarized_targets,
+                                     y_pred=binarized_preds, average='macro'),
+        'f1_micro': f1_score(y_true=binarized_targets,
+                             y_pred=binarized_preds, average='micro'),
+        'f1_macro': f1_score(y_true=binarized_targets,
+                             y_pred=binarized_preds, average='macro'),
 
-        # F1 score is the harmonic mean of precision and recall
-        f1_score = (
-            2 * precision * recall / (precision + recall)
-            if (precision and recall)
-            else 0
-        )
+    }
 
-        # add metrics for the current SDG id
-        prec_scores.append(precision)
-        recall_scores.append(recall)
-        f1_scores.append(f1_score)
-        supports.append(support)
-
-    # construct the final DataFrame
-    res_df = pd.DataFrame(
-        {
-            "precision": prec_scores,
-            "recall": recall_scores,
-            "f1": f1_scores,
-            "support": supports,
-        },
-        index=range(1, num_sdgs + 1),
-    )
     return res_df
-
-
-def micro_average(metric_df, metric_col_name="precision", weight_col_name="support"):
-    """
-
-    :param metric_df: output of the `calc_metrics_per_sdg` function
-    :param: weight_col_name: column name for the number of observations
-    :param metric_col_name: either "precision", "recall", or "f1"
-    :return: a micro-averaged value of the metric
-    """
-    return (metric_df[metric_col_name] * metric_df[weight_col_name]).sum() / metric_df[
-        weight_col_name
-    ].sum()
-
-
-def macro_average(metric_df, metric_col_name="precision"):
-    """
-
-    :param metric_df: output of the `calc_metrics_per_sdg` function
-    :param metric_col_name: either "precision", "recall", or "f1"
-    :return: a macro-averaged value of the metric
-    """
-    return metric_df[metric_col_name].mean()
