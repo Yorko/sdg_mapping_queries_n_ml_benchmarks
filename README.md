@@ -1,8 +1,8 @@
 # sdg\_mapping\_queries\_n\_ml\_benchmarks
 
-This code reproduces benchmarking experiments presented in Table 4 of the paper "Identifying research supporting the United Nations Sustainable Development Goals" – [ArXiv](https://arxiv.org/abs/2209.07285), under consideration at PLOS ONE.
+This code reproduces benchmarking experiments presented in Tables 4 and 5 of the paper "Identifying research supporting the United Nations Sustainable Development Goals" – [ArXiv](https://arxiv.org/abs/2209.07285), under consideration at PLOS ONE.
 
-<img src='img/table4_paper_experiments.png' width=70%>
+<img src='img/table4_5_paper_experiments.png' width=70%>
 
 ## Instructions
 
@@ -32,3 +32,24 @@ This will print precision, recall, F1 by SDGs along with their micro- and macro-
 ```
 
 The first 2 lines stand for the values presented in Table 4 of the paper: micro- and macro-averaged F1 scores. 
+
+In case of Bergen queries which are limited to a subset of SDGs, you need to pass and additional `--sdgs_to_consider` argument, e.g.
+
+```bash
+poetry run python sdg_mapping_queries_n_ml_benchmarks/validate_query_output_vs_val_set.py\
+ --path_to_query_output data/sdg_mapping_output/05_bergen_bta_eid_sdg_mapping.csv.zip \
+ --path_to_val_set data/sdg_eval_sets/01_sm_recall_eval_sdg_dataset.csv.zip \
+ --sdgs_to_consider 1 2 3 7 13 14
+```
+which outputs:
+
+```
+{
+'f1_macro': 0.6282726118299791,
+ 'f1_micro': 0.8377430399812784,
+ 'precision_macro': 0.5560439245838593,
+ 'precision_micro': 0.7835066051747049,
+ 'recall_macro': 0.8868996686880991,
+ 'recall_micro': 0.9000466931660361
+}
+```
