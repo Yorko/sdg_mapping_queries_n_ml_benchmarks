@@ -32,6 +32,13 @@ def parse_args() -> argparse.Namespace:
         help="Column name for the paper ID (Scopus EID)",
     )
 
+    parser.add_argument(
+        "--sdgs_to_consider",
+        type=int,
+        nargs="+",
+        help="A subset of SDGs to consider (by default, 16 SDGs from 1 to 16)",
+    )
+
     args = parser.parse_args()
 
     return args
@@ -65,7 +72,8 @@ def main() -> None:
         index_col_name=args.index_col_name,
     )
 
-    metric_df = multilabel_metrics(query_df=query_mapping_df, val_df=val_set_df)
+    metric_df = multilabel_metrics(query_df=query_mapping_df, val_df=val_set_df,
+                                   sdgs_to_consider=args.sdgs_to_consider)
 
     pprint(metric_df)
 
