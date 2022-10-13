@@ -15,7 +15,7 @@ This code reproduces benchmarking experiments presented in Tables 4 and 5 of the
 
 ```bash
 poetry run python sdg_mapping_queries_n_ml_benchmarks/validate_query_output_vs_val_set.py \
---path_to_query_output data/sdg_mapping_output/06_els_sm_sdg_2022_mapping.csv.zip \
+--path_to_query_output data/sdg_mapping_output/08_els_sm_sdg_2022_mapping.csv.zip \
 --path_to_val_set data/sdg_eval_sets/04_els_multilabel_sdg_eval_dataset.csv.zip
 ``` 
 This will print precision, recall, F1 by SDGs along with their micro- and macro-averaged values:
