@@ -2,7 +2,7 @@
 
 This code reproduces benchmarking experiments presented in Tables 4 and 5 of the paper "Identifying research supporting the United Nations Sustainable Development Goals" – [ArXiv](https://arxiv.org/abs/2209.07285), under consideration at PLOS ONE.
 
-<img src='img/table4_5_paper_experiments.png' width=70%>
+<img src='img/table4_paper_experiments.png' width=70%>
 
 <img src='img/table5_paper_experiments.png' width=70%>
 
