@@ -6,10 +6,12 @@ authors = ["Yury Kashnitsky <y.kashnitskiy@elsevier.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
-pandas = "^1.4.3"
-numpy = "^1.23.3"
-scipy = "^1.9.1"
-scikit-learn = "^1.1.2"
+openpyxl = "^3.1.2"
+pandas = "^2.1.1"
+numpy = "^1.26.1"
+scipy = "^1.11.3"
+scikit-learn = "^1.3.2"
+tqdm = "^4.66.1"
 
 [tool.poetry.dev-dependencies]
 
