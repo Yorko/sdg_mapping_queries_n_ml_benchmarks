@@ -1,6 +1,6 @@
 # sdg\_mapping\_queries\_n\_ml\_benchmarks
 
-This code reproduces benchmarking experiments presented in Tables 4 and 5 of the paper "Identifying research supporting the United Nations Sustainable Development Goals" – [ArXiv](https://arxiv.org/abs/2209.07285), under consideration at QSS.
+This code reproduces benchmarking experiments presented in Tables 4-5 and 9-12 of the paper "Identifying research supporting the United Nations Sustainable Development Goals" – [ArXiv](https://arxiv.org/abs/2209.07285), under consideration at QSS.
 
 <img src='img/table4_sdg_paper_experiments.png' width=70%>
 
@@ -25,12 +25,12 @@ This will print precision, recall, F1 by SDGs along with their micro- and macro-
 
 ```
 {
- 'f1_macro': 71,
- 'f1_micro': 78,
+ 'f1_macro': 67,
+ 'f1_micro': 73,
  'precision_macro': 63,
  'precision_micro': 69,
- 'recall_macro': 86,
- 'recall_micro': 89
+ 'recall_macro': 75,
+ 'recall_micro': 78
 }
 ```
 

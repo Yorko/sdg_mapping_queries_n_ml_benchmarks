@@ -10,7 +10,7 @@ def multilabel_metrics(
     val_df: pd.DataFrame,
     num_labels: int = NUM_SDGS,
     sdg_id_col_name: str = "sdg_id",
-    sdg_pred_col_name: str = "sdg_pred",
+    sdg_pred_col_name: str = "sdg_id",
     sdgs_to_consider: list[int] = (),
 ) -> dict[str, int]:
     """
@@ -28,32 +28,40 @@ def multilabel_metrics(
     query_df = query_df.copy()
     val_df = val_df.copy()
 
-    mlb = MultiLabelBinarizer(classes=range(num_labels + 1))
+    if not sdgs_to_consider:
+        sdgs_to_consider = range(num_labels + 1)
 
-    if sdgs_to_consider:
-        val_df = val_df[val_df[sdg_id_col_name].isin(sdgs_to_consider)]
-        query_df = query_df[query_df[sdg_id_col_name].isin(sdgs_to_consider)]
+    val_df = val_df[val_df[sdg_id_col_name].isin(sdgs_to_consider)]
+    query_df = query_df[query_df[sdg_pred_col_name].isin(sdgs_to_consider)]
 
-        le = LabelEncoder()
-        val_df[sdg_id_col_name] = le.fit_transform(val_df[sdg_id_col_name])
-        query_df[sdg_id_col_name] = le.transform(query_df[sdg_id_col_name])
+    le = LabelEncoder().fit(
+        val_df[sdg_id_col_name].unique().tolist()
+        + query_df[sdg_pred_col_name].unique().tolist()
+    )
+    val_df[sdg_id_col_name] = le.transform(val_df[sdg_id_col_name])
+    query_df[sdg_pred_col_name] = le.transform(query_df[sdg_pred_col_name])
 
-        mlb = MultiLabelBinarizer(classes=range(len(sdgs_to_consider)))
+    mlb = MultiLabelBinarizer(classes=range(len(sdgs_to_consider)))
 
     # take only those IDs with prediction that are present in the validation set
     query_map = query_df[query_df.index.isin(val_df.index)]
 
     # group predictions by ID and collect a list of predicted Goals per ID
     pred_grouped = pd.DataFrame(
-        query_map.groupby(query_map.index)[sdg_id_col_name].apply(list)
-    ).rename(columns={sdg_id_col_name: sdg_pred_col_name})
+        query_map.groupby(query_map.index)[sdg_pred_col_name].apply(list)
+    )
     # group labels by ID and collect a list of labels per ID
     labels_qrouped = pd.DataFrame(
         val_df.groupby(val_df.index)[sdg_id_col_name].apply(list)
     )
 
-    # collect both in a same DataFrame
-    pred_df = pred_grouped.join(labels_qrouped, how="inner")
+    if sdg_id_col_name == sdg_pred_col_name:
+        sdg_pred_col_name += "_pred"
+        pred_grouped = pred_grouped.rename(columns={sdg_id_col_name: sdg_pred_col_name})
+
+    # we are ignoring IDs that are not there in the valdiation set
+    # but we don not ignore the IDs present only in the val set. Hence "right" join below
+    pred_df = pred_grouped.join(labels_qrouped, how="right").fillna("").apply(list)
 
     # binarize labels and compute multi-label metrics
     binarized_targets = mlb.fit_transform(pred_df[sdg_id_col_name])
