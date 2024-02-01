@@ -1,6 +1,6 @@
 # sdg\_mapping\_queries\_n\_ml\_benchmarks
 
-This code reproduces benchmarking experiments presented in Tables 4-5 and 9-12 of the paper "Identifying research supporting the United Nations Sustainable Development Goals" – [ArXiv](https://arxiv.org/abs/2209.07285), under consideration at QSS.
+This code reproduces benchmarking experiments presented in Tables 4-5 and 9-12 of the paper "Identifying research supporting the United Nations Sustainable Development Goals" – [ArXiv](https://arxiv.org/abs/2209.07285), accepted at "Quantitative Science Studies".
 
 <img src='img/table4_sdg_paper_experiments.png' width=70%>
 
@@ -8,7 +8,7 @@ This code reproduces benchmarking experiments presented in Tables 4-5 and 9-12 o
 
 ## Instructions
 
-1. **"Getting data"**: the data is shared via [ICSR Lab](https://www.elsevier.com/icsr/icsrlab). ICSR Lab is intended for scholarly research only and is a cloud-based computational platform which enables researchers to analyze large structured datasets, including aggregated data from Scopus author profiles, PlumX Metrics, SciVal Topics, and [Peer Review Workbench](https://www.elsevier.com/connect/new-dataset-offers-unique-insights-into-peer-review). Upon successful [application](https://www.elsevier.com/icsr/icsrlab/how-to-apply), download the data from ICSR Lab and put it in the `data` folder so that the file structure looks like this: <br><br>
+1. **"Getting data"**: Most of the data is [shared on GDrive](https://drive.google.com/drive/folders/109hExDLLg2JXAOJf94XIfeV_PYpMWyWB?usp=sharing). However, some data (Elsevier mappings, Elsevier multilabel dataset, Auckland mappings) is only shared via [ICSR Lab](https://www.elsevier.com/icsr/icsrlab) upon request. ICSR Lab is intended for scholarly research only and is a cloud-based computational platform which enables researchers to analyze large structured datasets, including aggregated data from Scopus author profiles, PlumX Metrics, SciVal Topics, and [Peer Review Workbench](https://www.elsevier.com/connect/new-dataset-offers-unique-insights-into-peer-review). Upon successful [application](https://www.elsevier.com/icsr/icsrlab/how-to-apply), download the data from ICSR Lab and put it in the `data` folder so that the file structure looks like this: <br><br>
 <img src='img/sdg_data_file_structure.png' width=40%>
 
 
